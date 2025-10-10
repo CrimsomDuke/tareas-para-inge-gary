@@ -1,0 +1,31 @@
+<div class="card h-100">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-start">
+            <h5 class="card-title mb-1">{{ p.nombre }}</h5>
+            {% if p.enOferta %}
+                <span class="badge text-bg-warning">Oferta</span>
+            {% endif %}
+        </div>
+        <p class="card-text">{{ p.descripcion }}</p>
+
+        <p class="mb-1">
+            <small class="text-muted">
+                Alta: <span>{{ p.fechaAlta|date:"d/m/Y" }}</span>
+            </small>
+        </p>
+
+        <p class="fw-bold mb-1">
+            Precio:
+            <span>{{ p.precio|floatformat:2 }}</span>
+        </p>
+        {% if p.stock == 0 %}
+            <p class="text-danger">Sin stock</p>
+        {% else %}
+            <p class="text-success">Stock: {{ p.stock }}</p>
+        {% endif %}
+
+        <a class="btn btn-primary" href="/productos/{{ p.id }}">
+            Ver detalle
+        </a>
+    </div>
+</div>

@@ -1,0 +1,27 @@
+{% extends "tienda/base.html" %}
+
+{% block title %}Productos{% endblock %}
+
+{% block content %}
+<main class="container">
+    <h1 class="mb-3">Productos</h1>
+
+    {% if q %}
+        <p class="text-muted">Resultados para ‘{{ q }}’</p>
+    {% endif %}
+
+    {% if productos|length == 0 %}
+        <div class="alert alert-info">
+            No hay productos para mostrar.
+        </div>
+    {% else %}
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+            {% for p in productos %}
+                <div class="col">
+                    {% include "tienda/card.html" with p=p %}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</main>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends "tienda/base.html" %}
+
+{% block title %}Detalle{% endblock %}
+
+{% block content %}
+<main class="container">
+    <a class="btn btn-link ps-0" href="/">&larr; Volver al listado</a>
+
+    <h1>{{ producto.nombre }}</h1>
+
+    <div class="mb-2">
+        {% if producto.enOferta %}
+            <span class="badge text-bg-warning">Oferta</span>
+        {% endif %}
+        <small class="text-muted ms-2">
+            Alta: <span>{{ producto.fechaAlta|date:"d/m/Y" }}</span>
+        </small>
+    </div>
+
+    <p>{{ producto.descripcion }}</p>
+
+    <p class="fs-5">
+        <strong>Precio:</strong>
+        <span>{{ precioFormateado }}</span>
+    </p>
+
+    {% if producto.stock == 0 %}
+        <p class="text-danger">Sin stock</p>
+    {% else %}
+        <p class="text-success">
+            Stock: {{ producto.stock }}
+        </p>
+    {% endif %}
+</main>
+{% endblock %}
