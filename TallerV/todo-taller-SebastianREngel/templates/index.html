@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Todo bien crikoso</title>
+    </head>
+    <body>
+        <h1>Mis todos</h1>
+        <form id="todo-form">
+            <input type="text" name="title" id="title_field" placeholder="Enter todo title" required />
+            <input type="hidden" id="id_field" value="0" />
+            <button type="submit">Add</button>
+        </form>
+
+        <div style="margin: 10px;">
+            <ul id="todo-list">
+                <!-- Todos will be dynamically inserted here -->
+            </ul>
+        </div>
+    </body>
+
+    <script>
+        const apiUrl = "http://127.0.0.1:5000";
+
+        async function fetchTodos() {
+            const response = await fetch(apiUrl);
+            const data = await response.json();
+            const todoList = document.getElementById("todo-list");
+            todoList.innerHTML = "";
+
+            if (data.items.length === 0) {
+                todoList.innerHTML = "<li>No items available.</li>";
+            } else {
+                data.items.forEach(item => {
+                    const todoItem = document.createElement("div");
+                    todoItem.innerHTML = `
+                        <li>${item.title}</li>
+                        <button onclick="onEditClick(${item.id}, '${item.title}')">Marcar como finalizau</button>
+                        <button onclick="deleteTodo(${item.id})">Eliminar</button>
+                    `;
+                    if(item.finished){
+                        todoItem.style.textDecoration = "line-through";
+                    }
+                    todoList.appendChild(todoItem);
+                });
+            }
+        }
+
+        async function createOrUpdateTodo() {
+            const titleField = document.getElementById("title_field");
+            const idField = document.getElementById("id_field");
+            const title = titleField.value;
+            const id = parseInt(idField.value);
+
+            await fetch(apiUrl, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                    },
+                    body: new URLSearchParams({ title }),
+                });
+
+            titleField.value = "";
+            idField.value = "0";
+            fetchTodos();
+        }
+
+        async function deleteTodo(id) {
+            await fetch(`${apiUrl}/${id}`, {
+                method: "DELETE",
+            });
+            fetchTodos();
+        }
+
+        async function onEditClick(id) {
+            await fetch(`${apiUrl}/${id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+            });
+            fetchTodos();
+        }
+
+        document.getElementById("todo-form").addEventListener("submit", async (event) => {
+            event.preventDefault();
+            await createOrUpdateTodo();
+        });
+
+        //Cargar los todos
+        fetchTodos();
+
+    </script>
+</html>
